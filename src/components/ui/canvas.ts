@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions -- adapted upstream snippet: the
+   particle loop uses comma expressions, kept as-is to stay diffable against it. */
 /**
  * Interactive cursor-trail canvas.
  *
