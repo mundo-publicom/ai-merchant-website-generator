@@ -1,0 +1,237 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Instrument Serif", Georgia, serif;
+
+  --color-ink-950: #0b0d12;
+  --color-ink-900: #141821;
+  --color-ink-800: #232936;
+  --color-ink-700: #363d4d;
+  --color-ink-600: #525a6b;
+  --color-ink-500: #6b7385;
+  --color-ink-400: #949bab;
+  --color-ink-300: #c3c8d3;
+  --color-ink-200: #e1e4ea;
+  --color-ink-100: #eef0f4;
+  --color-ink-50: #f7f8fa;
+
+  --color-cobalt-50: #eef2ff;
+  --color-cobalt-100: #e0e7ff;
+  --color-cobalt-200: #c7d2ff;
+  --color-cobalt-300: #a5b4fc;
+  --color-cobalt-400: #7c8cf8;
+  --color-cobalt-500: #5a6bef;
+  --color-cobalt-600: #4250e0;
+  --color-cobalt-700: #343dbe;
+  --color-cobalt-800: #2c3499;
+  --color-cobalt-900: #282e78;
+
+  --color-canvas: #fbfbfd;
+
+  --radius-card: 14px;
+
+  --shadow-soft: 0 1px 2px rgba(11, 13, 18, 0.04), 0 8px 24px -12px rgba(11, 13, 18, 0.10);
+  --shadow-lift: 0 1px 2px rgba(11, 13, 18, 0.05), 0 18px 40px -20px rgba(11, 13, 18, 0.22);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink-900);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-cobalt-600);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--color-cobalt-200);
+  }
+
+  /* Tailwind's preflight resets buttons to `cursor: default`. Every CTA,
+     button, link and interactive control gets the pointer back. */
+  button,
+  [role="button"],
+  [role="tab"],
+  [role="option"],
+  a[href],
+  label[for],
+  summary,
+  select,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="file"],
+  input[type="color"],
+  input[type="range"] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  select:disabled,
+  input:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+
+  input[type="file"]::file-selector-button {
+    cursor: pointer;
+  }
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Landing-page texture.
+
+   The hero is a dark, canvas-backed band with cobalt accents. These utilities
+   let the sections underneath it borrow the same surface treatment instead of
+   each one inventing its own gradient.
+   --------------------------------------------------------------------------- */
+
+/* Faint ruled grid, sized to the 56px rhythm the section padding follows. */
+@utility grid-lines {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Same grid, inked for light sections. */
+@utility grid-lines-ink {
+  background-image:
+    linear-gradient(to right, rgb(11 13 18 / 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(11 13 18 / 0.045) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Fades any decorative layer out towards the edges of its section, so a grid
+   or glow never collides with the section border. */
+@utility mask-radial-fade {
+  mask-image: radial-gradient(70% 60% at 50% 40%, black, transparent 100%);
+}
+
+/* The hero frames its headline with a border that dissolves at the sides.
+   Panels further down the page reuse the effect at a smaller radius. */
+@utility mask-frame-fade {
+  mask-image: radial-gradient(600rem 80rem at center, white, transparent);
+}
+
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-fade-rise {
+  animation: fade-rise 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Toasts enter from the top on mobile and from the right on wider screens,
+   using the same easing curve as the wizard's step transition. */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes toast-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+}
+
+@keyframes toast-timer {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+.animate-toast-in {
+  animation: toast-in 0.24s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-toast-out {
+  animation: toast-out 0.18s cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+.animate-toast-timer {
+  animation: toast-timer var(--toast-duration, 4s) linear both;
+}
+
+@media (min-width: 640px) {
+  @keyframes toast-in {
+    from {
+      opacity: 0;
+      transform: translateX(16px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes toast-out {
+    from {
+      opacity: 1;
+      transform: none;
+    }
+    to {
+      opacity: 0;
+      transform: translateX(16px) scale(0.98);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* The toast timer is information, not decoration - it keeps its real
+     duration so the countdown still means something. */
+  .animate-toast-timer {
+    animation-duration: var(--toast-duration) !important;
+  }
+}
