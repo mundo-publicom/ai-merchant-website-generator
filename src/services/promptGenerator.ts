@@ -3,6 +3,7 @@ import { deriveFacts, type ProjectFacts } from "@/services/reportGenerator";
 import { CTA_BY_VALUE, labelFor, labelsFor, SOCIAL_NETWORKS } from "@/data/options";
 import { DESIGN_STYLE_BY_VALUE } from "@/data/designStyles";
 import { backOfficeModules, buildBackOfficeSections } from "@/services/backOffice";
+import { buildMarketingPlanDocument, buildMarketingSections } from "@/services/marketingPlan";
 import {
   bullets,
   displayUrl,
@@ -472,6 +473,8 @@ export function generateWebsitePrompt(
     "",
     "This brief covers two halves of one product: the public website, specified first, and the admin application that the business manages it from, specified in the BACK OFFICE sections. They share one codebase, one deployment and one database - the website renders what the back office holds, and everything the website captures is worked on in the back office. Build both.",
     "",
+    "The MARKETING PLAN sections at the end are not background reading. They are derived from this business's model and they place real requirements on the build - campaign landing pages, offers, attribution, review requests and a marketing module in the admin. Implement them.",
+    "",
     "You have everything you need below. Do not ask clarifying questions - build what is described here, and make reasonable professional decisions for anything not specified.",
   ].join("\n");
 
@@ -500,6 +503,7 @@ export function generateWebsitePrompt(
     buildReferencesSection(ctx),
     buildTechnicalRequirementsSection(ctx),
     ...buildBackOfficeSections(project, report, ctx.facts),
+    ...buildMarketingSections(project, report, ctx.facts),
     section(
       "DELIVERABLE",
       [
@@ -519,6 +523,13 @@ export function generateWebsitePrompt(
           "Authentication, roles enforced server-side, and an audit log.",
           "Draft, preview, publish and revision history for content, with published changes appearing on the site without a redeploy.",
           "Setup instructions, a .env.example, and the first owner login.",
+        ]),
+        "",
+        "The marketing plan, built into both:",
+        bullets([
+          "Everything listed in the MARKETING PLAN - WHAT THE BUILD MUST PROVIDE section: campaign landing pages, offer bar, UTM capture, conversion events and share images.",
+          "A Marketing module in the admin covering campaigns, offers, review requests, broadcasts and attribution.",
+          "The plan itself seeded as content: the starting channels, the draft offers and the first-90-days checklist, so it is live in the admin on first login.",
         ]),
       ].join("\n"),
     ),
@@ -579,6 +590,8 @@ export function generatePlanDocument(
       backOfficeModules(project, facts).map((module) => `**${module.title}** - ${module.purpose}`),
     ),
   );
+  lines.push("");
+  lines.push(...buildMarketingPlanDocument(project, facts));
   lines.push("");
   lines.push(`## Getting found`);
   lines.push(report.seoStrategy);
